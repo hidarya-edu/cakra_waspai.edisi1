@@ -2244,6 +2244,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 </script>
-
+<div class="max-w-4xl mx-auto px-6 py-12" style="font-family: sans-serif;">
+  <div class="bg-white rounded-2xl p-8 shadow-lg" style="border: 1px solid #e2e8f0; border-top: 4px solid #9333ea; border-radius: 1rem; padding: 2rem; max-width: 600px; margin: 0 auto;">
+    <h3 style="color: #6b21a8; font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">✍️ Formulir Input Buku Antologi</h3>
+    <p style="color: #4b5563; font-size: 0.875rem; margin-bottom: 1.5rem;">Para pengawas silakan isi nama dan naskah artikel Anda di bawah ini. Sekali klik kirim, data langsung masuk ke Operator.</p>
+    
+    <form action="https://formspree.io/f/mbdbbwyo" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
+      <div>
+        <label style="display: block; font-size: 0.875rem; font-weight: bold; color: #374151; margin-bottom: 0.25rem;">Nama Lengkap Pengawas:</label>
+        <input type="text" name="Nama Pengawas" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 0.5rem;" placeholder="Contoh: Dr. Ia Hidarya, M.M." required>
+      </div>
+      <div>
+        <label style="display: block; font-size: 0.875rem; font-weight: bold; color: #374151; margin-bottom: 0.25rem;">Isi Naskah / Artikel Praktik Baik:</label>
+        <textarea name="Isi Artikel" rows="8" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 0.5rem;" placeholder="Ketik atau tempel naskah tulisan Anda di sini..." required></textarea>
+      </div>
+      <button type="submit" style="background-color: #9333ea; color: white; padding: 0.75rem; border: none; border-radius: 0.5rem; font-weight: bold; cursor: pointer;">
+        🚀 Kirim Data Naskah
+      </button>
+    </form>
+  </div>
+</div>
 </body>
 </html>
