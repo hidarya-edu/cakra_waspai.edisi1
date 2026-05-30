@@ -2242,12 +2242,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-});<script>
+});
+<script>
 document.addEventListener("DOMContentLoaded", function() {
   // 1. Menyisipkan Tombol Kirim tepat di antara Simpan Gambar dan Simpan PDF
   setInterval(function() {
     const btnKirimExist = document.getElementById("btn-kirim-formspree-oto");
-    if (btnKirimExist) return; // Jika tombol sudah ada, jangan buat lagi
+    if (btnKirimExist) return; 
 
     let btnPng = null;
     document.querySelectorAll("button").forEach(btn => {
@@ -2279,7 +2280,6 @@ document.addEventListener("DOMContentLoaded", function() {
   }, 500);
 });
 
-// Fungsi Otomatis: Ambil data dari Kartu Identitas, kirim langsung ke Formspree
 function kirimDataKeFormspreeOtomatis() {
   const selectPengawasRaw = document.getElementById("select-pengawas")?.value;
   const judul = document.getElementById("select-judul")?.value || "Tidak diisi";
@@ -2333,7 +2333,5 @@ function resetTombolKirim(btn) {
   btn.disabled = false;
 }
 </script>
-</body>
-</html>
 </body>
 </html>
