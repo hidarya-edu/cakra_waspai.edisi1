@@ -2243,26 +2243,80 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 });
+<script>
+// Fungsi otomatis untuk memindahkan posisi tombol dan menghubungkan data kartu ke Formspree
+document.addEventListener("DOMContentLoaded", function() {
+  // 1. Memindahkan Tombol Kirim Naskah ke Antara Simpan Gambar dan Simpan PDF
+  const btnPng = document.querySelector('a[onclick*="downloadPNG"]') || document.querySelector('button[onclick*="downloadPNG"]') || document.getElementsName('Simpan Gambar (PNG)')[0];
+  
+  // Buat tombol kirim baru yang rapi
+  const btnKirimOto = document.createElement("button");
+  btnKirimOto.innerHTML = "🚀 Kirim Data Naskah ke Operator";
+  btnKirimOto.type = "button";
+  btnKirimOto.style = "background-color: #9333ea; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem; font-weight: bold; cursor: pointer; margin: 5px; font-size: 14px;";
+  btnKirimOto.onclick = kirimDataKeFormspreeOtomatis;
+
+  // Sisipkan tombol tepat setelah tombol Simpan Gambar (sebelum Simpan PDF)
+  if (btnPng && btnPng.parentNode) {
+    btnPng.parentNode.insertBefore(btnKirimOto, btnPng.nextSibling);
+  }
+
+  // 2. Bersihkan tombol-tombol yang tidak perlu di menu Progress
+  const tombolAbaikan = ["Kirim JSON", "Export Excel", "Kirim Link", "Import Data"];
+  document.querySelectorAll("button, a").forEach(el => {
+    if (tombolAbaikan.some(teks => el.innerText.includes(teks))) {
+      el.style.display = "none";
+    }
+  });
+});
+
+// Fungsi otomatis: Ambil data dari Kartu/Identitas, lalu tembak ke Formspree
+function kirimDataKeFormspreeOtomatis() {
+  // Mengambil data langsung dari kolom "Input Data Lengkap" yang diisi pengawas
+  const nama = document.getElementById("nama-pengawas")?.value || document.querySelector("select[name*='nama']")?.value || "Tidak diisi";
+  const judul = document.getElementById("judul-artikel")?.value || document.querySelector("select[name*='judul']")?.value || "Tidak diisi";
+  const nip = document.getElementById("nip")?.value || document.querySelector("input[placeholder*='NIP']")?.value || "Tidak diisi";
+  const jenjang = document.querySelector("select[name*='jenjang']")?.value || "Tidak diisi";
+  
+  if (nama === "" || name.includes("Pilih Nama")) {
+    alert("Mohon pilih Nama Pengawas terlebih dahulu di bagian Input Data Lengkap!");
+    return;
+  }
+
+  // Buat form bayangan untuk mengirim data tanpa merusak halaman
+  const formData = new FormData();
+  formData.append("Nama Pengawas", nama);
+  formData.append("NIP / NUPTK", nip);
+  formData.append("Jenjang", jenjang);
+  formData.append("Judul Artikel", judul);
+
+  // Tampilkan efek loading pada tombol
+  this.innerText = "⏳ Sedang Mengirim Data...";
+  this.disabled = true;
+
+  // Kirim otomatis ke ID Formspree Anda
+  fetch("https://formspree.io/f/mbdbbwyo", {
+    method: "POST",
+    body: formData,
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(response => {
+    if (response.ok) {
+      alert("✅ Berhasil! Data Lengkap dan Judul Artikel Anda sudah tersimpan otomatis di sistem Operator.");
+      this.innerText = "🚀 Data Terkirim!";
+      this.style.backgroundColor = "#16a34a"; // Berubah jadi hijau tanda sukses
+    } else {
+      alert("❌ Gagal mengirim. Pastikan koneksi internet lancar.");
+      this.innerText = "🚀 Kirim Data Naskah ke Operator";
+      this.disabled = false;
+    }
+  })
+  .catch(error => {
+    alert("❌ Terjadi kesalahan sistem pengiriman.");
+    this.innerText = "🚀 Kirim Data Naskah ke Operator";
+    this.disabled = false;
+  });
+}
 </script>
-<div class="max-w-4xl mx-auto px-6 py-12" style="font-family: sans-serif;">
-  <div class="bg-white rounded-2xl p-8 shadow-lg" style="border: 1px solid #e2e8f0; border-top: 4px solid #9333ea; border-radius: 1rem; padding: 2rem; max-width: 600px; margin: 0 auto;">
-    <h3 style="color: #6b21a8; font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">✍️ Formulir Input Buku Antologi</h3>
-    <p style="color: #4b5563; font-size: 0.875rem; margin-bottom: 1.5rem;">Para pengawas silakan isi nama dan naskah artikel Anda di bawah ini. Sekali klik kirim, data langsung masuk ke Operator.</p>
-    
-    <form action="https://formspree.io/f/mbdbbwyo" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
-      <div>
-        <label style="display: block; font-size: 0.875rem; font-weight: bold; color: #374151; margin-bottom: 0.25rem;">Nama Lengkap Pengawas:</label>
-        <input type="text" name="Nama Pengawas" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 0.5rem;" placeholder="Contoh: Dr. Ia Hidarya, M.M." required>
-      </div>
-      <div>
-        <label style="display: block; font-size: 0.875rem; font-weight: bold; color: #374151; margin-bottom: 0.25rem;">Isi Naskah / Artikel Praktik Baik:</label>
-        <textarea name="Isi Artikel" rows="8" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 0.5rem;" placeholder="Ketik atau tempel naskah tulisan Anda di sini..." required></textarea>
-      </div>
-      <button type="submit" style="background-color: #9333ea; color: white; padding: 0.75rem; border: none; border-radius: 0.5rem; font-weight: bold; cursor: pointer;">
-        🚀 Kirim Data Naskah
-      </button>
-    </form>
-  </div>
-</div>
 </body>
 </html>
