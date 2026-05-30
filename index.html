@@ -2270,31 +2270,69 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 });
 
-// Fungsi otomatis: Ambil data dari Kartu/Identitas, lalu tembak ke Formspree
-function kirimDataKeFormspreeOtomatis() {
-  // Mengambil data langsung dari kolom "Input Data Lengkap" yang diisi pengawas
-  const nama = document.getElementById("nama-pengawas")?.value || document.querySelector("select[name*='nama']")?.value || "Tidak diisi";
-  const judul = document.getElementById("judul-artikel")?.value || document.querySelector("select[name*='judul']")?.value || "Tidak diisi";
-  const nip = document.getElementById("nip")?.value || document.querySelector("input[placeholder*='NIP']")?.value || "Tidak diisi";
-  const jenjang = document.querySelector("select[name*='jenjang']")?.value || "Tidak diisi";
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // 1. Memindahkan Tombol Kirim Naskah tepat di antara Simpan Gambar dan Simpan PDF
+  // Mencari tombol Simpan Gambar berdasarkan teks di dalam button
+  let btnPng = null;
+  document.querySelectorAll('button').forEach(btn => {
+    if (btn.innerText.includes('Simpan Gambar')) {
+      btnPng = btn;
+    }
+  });
   
-  if (nama === "" || name.includes("Pilih Nama")) {
-    alert("Mohon pilih Nama Pengawas terlebih dahulu di bagian Input Data Lengkap!");
+  if (btnPng && btnPng.parentNode) {
+    // Buat tombol kirim baru dengan gaya estetik melayang yang seragam
+    const btnKirimOto = document.createElement("button");
+    btnKirimOto.innerHTML = "<span>🚀</span> Kirim Data Naskah ke Operator";
+    btnKirimOto.type = "button";
+    btnKirimOto.className = "bg-gradient-to-r from-purple-600 to-purple-800 text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-2 m-1 text-sm";
+    btnKirimOto.onclick = kirimDataKeFormspreeOtomatis;
+
+    // Sisipkan tombol tepat setelah Simpan Gambar
+    btnPng.parentNode.insertBefore(btnKirimOto, btnPng.nextSibling);
+  }
+
+  // 2. Bersihkan tombol-tombol yang tidak perlu di menu Progress secara permanen
+  const tombolAbaikan = ["Export Excel", "Backup JSON", "Import Data", "Share Link"];
+  document.querySelectorAll("button").forEach(el => {
+    if (tombolAbaikan.some(teks => el.innerText.includes(teks))) {
+      el.style.setProperty('display', 'none', 'important');
+    }
+  });
+});
+
+// Fungsi otomatis membaca data identitas asli yang dipilih pengawas
+function kirimDataKeFormspreeOtomatis() {
+  const selectPengawasRaw = document.getElementById("select-pengawas")?.value;
+  const judul = document.getElementById("select-judul")?.value || "Tidak diisi";
+  const nip = document.getElementById("id-nip")?.value || "Tidak diisi";
+  const jenjang = document.getElementById("select-jenjang")?.value || "Tidak diisi";
+  
+  if (!selectPengawasRaw || selectPengawasRaw === "") {
+    alert("⚠️ Mohon pilih Nama Pengawas terlebih dahulu di bagian Input Data Lengkap!");
     return;
   }
 
-  // Buat form bayangan untuk mengirim data tanpa merusak halaman
+  // Ekstrak nama asli dari data JSON selector
+  let nama = selectPengawasRaw;
+  try {
+    const parsed = JSON.parse(selectPengawasRaw);
+    nama = parsed.nama || selectPengawasRaw;
+  } catch(e) {}
+
+  // Siapkan data pengiriman rapi
   const formData = new FormData();
   formData.append("Nama Pengawas", nama);
   formData.append("NIP / NUPTK", nip);
-  formData.append("Jenjang", jenjang);
+  formData.append("Jenjang", jenjang.toUpperCase());
   formData.append("Judul Artikel", judul);
 
-  // Tampilkan efek loading pada tombol
+  // Efek memuat (Loading) pada tombol
   this.innerText = "⏳ Sedang Mengirim Data...";
   this.disabled = true;
 
-  // Kirim otomatis ke ID Formspree Anda
+  // Tembak langsung ke ID Formspree Anda
   fetch("https://formspree.io/f/mbdbbwyo", {
     method: "POST",
     body: formData,
@@ -2302,20 +2340,23 @@ function kirimDataKeFormspreeOtomatis() {
   })
   .then(response => {
     if (response.ok) {
-      alert("✅ Berhasil! Data Lengkap dan Judul Artikel Anda sudah tersimpan otomatis di sistem Operator.");
-      this.innerText = "🚀 Data Terkirim!";
-      this.style.backgroundColor = "#16a34a"; // Berubah jadi hijau tanda sukses
+      alert("✅ Berhasil! Data lengkap dan Judul Artikel Anda sudah tersimpan otomatis di sistem Operator tanpa perlu input ulang.");
+      this.innerText = "🚀 Data Sukses Terkirim!";
+      this.style.background = "linear-gradient(to right, #16a34a, #15803d)";
     } else {
-      alert("❌ Gagal mengirim. Pastikan koneksi internet lancar.");
-      this.innerText = "🚀 Kirim Data Naskah ke Operator";
-      this.disabled = false;
+      alert("❌ Gagal mengirim. Pastikan jaringan internet Anda stabil.");
+      resetTombolKirim(this);
     }
   })
   .catch(error => {
-    alert("❌ Terjadi kesalahan sistem pengiriman.");
-    this.innerText = "🚀 Kirim Data Naskah ke Operator";
-    this.disabled = false;
+    alert("❌ Terjadi gangguan sistem pengiriman data.");
+    resetTombolKirim(this);
   });
+}
+
+function resetTombolKirim(btn) {
+  btn.innerHTML = "<span>🚀</span> Kirim Data Naskah ke Operator";
+  btn.disabled = false;
 }
 </script>
 </body>
