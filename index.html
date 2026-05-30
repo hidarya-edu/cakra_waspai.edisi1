@@ -951,9 +951,24 @@
          <button onclick="downloadCardPDF()" class="bg-gradient-to-r from-red-500 to-pink-600 text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-2">
           <span>📄</span> Simpan PDF
          </button>
-         <a href="https://formspree.io/f/mbdbbwyo" target="_blank" class="bg-gradient-to-r from-green-600 to-green-800 text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-2">
-      <span>🚀</span> Kirim Data
-    </a>
+         <form action="https://formspree.io/f/mbdbbwyo" method="POST" class="mt-4 flex flex-col gap-2">
+  <input type="hidden" name="Nama" id="form-nama">
+  <input type="hidden" name="Judul" id="form-judul">
+  <input type="hidden" name="NIP" id="form-nip">
+  
+  <button type="submit" class="bg-gradient-to-r from-green-600 to-green-800 text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2">
+    <span>🚀</span> Kirim Data Naskah ke Operator
+  </button>
+</form>
+
+<script>
+// Tambahkan skrip ini di bagian bawah sebelum </body> untuk mengisi data ke form saat tombol diklik
+document.querySelector('form[action*="formspree"]').addEventListener('submit', function() {
+  document.getElementById('form-nama').value = document.getElementById('card-nama').textContent;
+  document.getElementById('form-judul').value = document.getElementById('card-judul').textContent;
+  document.getElementById('form-nip').value = document.getElementById('card-nip').textContent;
+});
+</script>
         </div>
        </div>
       </div>
